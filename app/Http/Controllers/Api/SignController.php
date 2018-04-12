@@ -117,18 +117,31 @@ class SignController extends Controller
             ]);
         }
 
+        \DB::beginTransaction();
+
+        try {
+            $reward = Reward::getRewardByDate($resignDate);
+
+            UserSign::create([
+                'user_id' => $userId,
+                'created_at' => $resignDate,
+                'reward_id'=>$reward->id,
+                'resign_at' => Carbon::now()->toDateTimeString(),
+                'is_resign' => 1,
+            ]);
+
+            \DB::commit();
+        } catch (\Exception $exception) {
+
+            \DB::rollBack();
+
+            return response()->json([
+                'code' => 500,
+                'msg' => 'system internal error',
+            ]);
+        }
 
 
-
-        $reward = Reward::getRewardByDate($resignDate);
-
-        UserSign::create([
-            'user_id' => $userId,
-            'created_at' => $resignDate,
-            'reward_id'=>$reward->id,
-            'resign_at' => Carbon::now()->toDateTimeString(),
-            'is_resign' => 1,
-        ]);
 
 
         return response()->json([
