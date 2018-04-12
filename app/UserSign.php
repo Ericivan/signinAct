@@ -33,4 +33,12 @@ class UserSign extends Model
             ->first();
     }
 
+    public static function getUserSignCount($userId, $month)
+    {
+        return static::whereMonth('created_at', '=', $month)
+            ->where('user_id', $userId)
+            ->select(\DB::raw('count(id)'))
+            ->first();
+    }
+
 }

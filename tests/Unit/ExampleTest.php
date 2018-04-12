@@ -65,7 +65,7 @@ class ExampleTest extends TestCase
 
     public function testTime()
     {
-        dd(Carbon::parse('2018-01-01')->lt(Carbon::now()));
+
     }
 
 }

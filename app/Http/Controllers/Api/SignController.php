@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Reward;
+use App\User;
+use App\UserItem;
 use App\UserSign;
 use Carbon\Carbon;
 
@@ -16,6 +18,12 @@ class SignController extends Controller
 
         $userId = 1;
         $date = Carbon::now()->toDateString();
+
+        //测试
+        if (env('APP_ENV') == 'local') {
+            $date = request('date',$date);
+        }
+
         $isSign = UserSign::checkUserHasSign($userId, $date);
 
         if ($isSign) {
@@ -34,13 +42,21 @@ class SignController extends Controller
             UserSign::create([
                 'user_id' => $userId,
                 'reward_id'=>$reward->id,
-                'created_at' => Carbon::now()->toDateString(),
+                'created_at' => $date,
             ]);
+
+            User::where('id',$userId)->increment('gold', intval($reward->name));
+
+            if ($date == Carbon::now()->endOfMonth()->toDateString()) {
+                $this->getFinallyRewards($userId);
+            }
 
             \DB::commit();
         } catch (\Exception $exception) {
 
             \DB::rollBack();
+
+            \Log::error('sign', ['msg'=>$exception->getMessage()]);
 
             return response()->json([
                 'msg' => 'system internal error',
@@ -130,6 +146,14 @@ class SignController extends Controller
                 'is_resign' => 1,
             ]);
 
+            //用户增加金币
+            User::where('id',$userId)->increment('gold', intval($reward->name));
+
+
+            if ($resignDate == Carbon::now()->endOfMonth()->toDateString()) {
+                $this->getFinallyRewards($userId);
+            }
+
             \DB::commit();
         } catch (\Exception $exception) {
 
@@ -141,9 +165,6 @@ class SignController extends Controller
             ]);
         }
 
-
-
-
         return response()->json([
             'code' => 0,
             'msg' => 'success',
@@ -152,6 +173,13 @@ class SignController extends Controller
 
     }
 
+    /**
+     * @param $month
+     * @return \Illuminate\Support\Collection
+     * @author :Ericivan
+     * @name : getMothTimeIntervel
+     * @description 获取月份时间区间
+     */
     protected function getMothTimeIntervel($month)
     {
         $interval = collect();
@@ -171,13 +199,57 @@ class SignController extends Controller
         return $interval;
     }
 
+    /**
+     * @param $date
+     * @return bool
+     * @author :Ericivan
+     * @name : validRequestDate
+     * @description 验证用户传入事件的正确性
+     */
     public function validRequestDate($date)
     {
         return Carbon::parse($date)->lt(Carbon::now());
     }
 
-    protected function getCurrent()
+    /**
+     * @return int
+     * @author :Ericivan
+     * @name : getCurrentMonth
+     * @description 获取当前月份天数
+     */
+    protected function getCurrentMonth()
     {
         return Carbon::now()->month;
+    }
+
+    /**
+     * @param $userId
+     * @author :Ericivan
+     * @name : getFinallyRewards
+     * @description 获取签到最终大奖
+     */
+    protected function getFinallyRewards($userId)
+    {
+        //TODO 最终大奖
+
+        $month = Carbon::now()->month;
+        $nameOfFinallyReward = config('sign.' . $month);
+
+        $dayInMonth = $this->getDayInMonth();
+
+
+        if ($dayInMonth == (UserSign::getUserSignCount($userId, $this->getCurrentMonth()))) {
+            UserItem::create([
+                'name' => $nameOfFinallyReward,
+                'user_id' => $userId,
+                'is_get' => 0,
+            ]);
+        }
+
+    }
+
+    protected function getDayInMonth()
+    {
+        return Carbon::now()->daysInMonth;
     }
 }
