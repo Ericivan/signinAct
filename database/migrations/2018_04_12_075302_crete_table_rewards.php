@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePasswordResetsTable extends Migration
+class CreteTableRewards extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,18 @@ class CreatePasswordResetsTable extends Migration
      */
     public function up()
     {
-        if (Schema::hasTable('password_resets')) {
+        if (Schema::hasTable('rewards')) {
             return;
         }
-        Schema::create('password_resets', function (Blueprint $table) {
-            $table->string('email',100)->index();
-            $table->string('token',200)->index();
-            $table->timestamp('created_at')->nullable();
+
+        Schema::create('rewards', function (Blueprint $table) {
+            $table->increments('id');
+
+            $table->string('name', 100);
+
+            $table->timestamp('date')->nullable();
+
+            $table->charset = 'utf8mb4';
         });
     }
 
@@ -30,6 +35,6 @@ class CreatePasswordResetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('password_resets');
+        Schema::dropIfExists('rewards');
     }
 }
