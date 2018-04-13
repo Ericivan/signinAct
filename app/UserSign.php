@@ -37,8 +37,8 @@ class UserSign extends Model
     {
         return static::whereMonth('created_at', '=', $month)
             ->where('user_id', $userId)
-            ->select(\DB::raw('count(id)'))
-            ->first();
+            ->select(\DB::raw('count(id) as count'))
+            ->first()->count??0;
     }
 
 }

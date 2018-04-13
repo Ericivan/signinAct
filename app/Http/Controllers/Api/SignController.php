@@ -60,7 +60,7 @@ class SignController extends Controller
 
             \DB::rollBack();
 
-            \Log::error('sign', ['msg'=>$exception->getMessage()]);
+            \Log::error('sign', ['msg'=>$exception->getMessage(),'reward'=>$reward->toArray(),'line'=>$exception->getLine()]);
 
             $this->error(9002, 500);
         }
@@ -225,11 +225,24 @@ class SignController extends Controller
 
 
         if ($dayInMonth == (UserSign::getUserSignCount($userId, $this->getCurrentMonth()))) {
-            UserItem::create([
-                'name' => $nameOfFinallyReward,
-                'user_id' => $userId,
-                'is_get' => 0,
-            ]);
+
+            \DB::beginTransaction();
+            try {
+                UserItem::create([
+                    'item_name' => $nameOfFinallyReward,
+                    'user_id' => $userId,
+                    'is_get' => 0,
+                ]);
+
+                \DB::commit();
+            } catch (\Exception $exception) {
+                \DB::rollBack();
+
+                \Log::error('finally_reward', ['msg' => $exception->getMessage(), 'line' => $exception->getLine()]);
+                $this->error(9002, 500);
+
+            }
+
         }
 
     }
