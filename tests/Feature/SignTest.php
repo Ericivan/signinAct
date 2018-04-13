@@ -35,7 +35,8 @@ class SignTest extends TestCase
 
     public function testSignActivity()
     {
-        $month = 5;
+        $month = 4;
+
         $timeInterval = $this->getMothTimeIntervel($month)->pluck('date')->toArray();
 
         $api = 'api/sign';

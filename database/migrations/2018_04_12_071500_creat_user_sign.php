@@ -18,7 +18,7 @@ class CreatUserSign extends Migration
         }
         Schema::create('user_sign', function (Blueprint $table) {
             $table->increments('id');
-            $table->tinyInteger('is_resign');
+            $table->tinyInteger('is_resign')->default(0);
             $table->integer('user_id',false,true);
             $table->integer('reward_id',false,true);
             $table->timestamp('created_at')->nullable();

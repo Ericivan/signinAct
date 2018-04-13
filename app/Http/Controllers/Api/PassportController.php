@@ -16,6 +16,11 @@ class PassportController extends Controller
 {
     public function login()
     {
+
+        $this->validate(request(), [
+            'email' => 'required',
+            'password' => 'required',
+        ]);
         if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
             $user = Auth::user();
 
@@ -26,6 +31,8 @@ class PassportController extends Controller
                 'msg' => 'ok',
             ]);
         }
+
+        $this->error('2000', 401, '账户或密码错误');
     }
 
     public function register()
