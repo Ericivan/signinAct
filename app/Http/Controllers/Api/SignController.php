@@ -114,10 +114,7 @@ class SignController extends Controller
 
         //检测用户当日是否已经进行补签操作
         if (isset($isReSign)) {
-            return response()->json([
-                'code' => 10001,
-                'msg' => 'user has resign today',
-            ]);
+            $this->error(10001, 409);
         }
 
         $hasSign = UserSign::checkUserHasSign($userId, $resignDate);
@@ -190,10 +187,12 @@ class SignController extends Controller
      * @return bool
      * @author :Ericivan
      * @name : validRequestDate
-     * @description 验证用户传入事件的正确性
+     * @description 验证用户传入时间的正确性
      */
     public function validRequestDate($date)
     {
+        if(env('APP_ENV')=='local') return true;
+
         return Carbon::parse($date)->lt(Carbon::now());
     }
 

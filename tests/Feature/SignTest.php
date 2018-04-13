@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\Api\SignController;
 use App\User;
 use App\UserSign;
 use Carbon\Carbon;
@@ -46,29 +47,38 @@ class SignTest extends TestCase
         \Log::useDailyFiles(storage_path() . '/logs/sign_test.log');
 
         foreach ($timeInterval as $time) {
-            $result = $this->post($api, [
-                'date' => $time,
-            ]);
-
-            if ($result->getStatusCode() == 200) {
-                echo "{$time} 签到成功" . PHP_EOL;
-            }else{
-                echo "{$time} 签到失败" . PHP_EOL;
-                \Log::error('test_sign', ['content' => $result->getOriginalContent()]);
-            }
+            $this->sign($api, $time);
         }
 
     }
 
     public function testResign()
     {
-        $timeInterval = $this->getMothTimeIntervel(Carbon::now()->month)->pluck('date')->toArray();
+        $month = 4;
+        $timeInterval = $this->getMothTimeIntervel($month)->pluck('date')->toArray();
 
-        $api = 'api/sign';
+        $lastKey = count($timeInterval) - 1;
+
+        $apiSign = 'api/sign';
+
+        $apiResign = 'api/sign/re';
 
         $user = User::find(1);
 
+        UserSign::where('user_id', $user->id)->whereMonth('created_at', $month)->delete();
+
         $this->be($user, 'api');
+
+        foreach ($timeInterval as $key => $time) {
+
+            if ($key % 2 == 0) {
+                $this->sign($apiResign, $time);
+            }elseif($key==$lastKey){
+                $this->sign($apiSign, $time);
+            }else{
+                $this->resign($apiSign, $time);
+            }
+        }
 
 
     }
@@ -95,5 +105,33 @@ class SignTest extends TestCase
     public function testFinally()
     {
         dd(UserSign::getUserSignCount(1, 4));
+    }
+
+    protected function sign($api, $date)
+    {
+        $result = $this->post($api, [
+            'date' => $date,
+        ]);
+
+        if ($result->getStatusCode() == 200) {
+            echo "{$date} 签到成功" . PHP_EOL;
+        }else{
+            echo "{$date} 签到失败" . PHP_EOL;
+            \Log::error('test_sign', ['content' => $result->getOriginalContent()]);
+        }
+    }
+
+    protected function resign($api, $date)
+    {
+        $result = $this->post($api, [
+            'date' => $date,
+        ]);
+
+        if ($result->getStatusCode() == 200) {
+            echo "{$date} 补签成功" . PHP_EOL;
+        }else{
+            echo "{$date} 补签失败" . PHP_EOL;
+            \Log::error('test_resign', ['content' => $result->getOriginalContent()]);
+        }
     }
 }
