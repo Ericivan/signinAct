@@ -250,4 +250,5 @@ class SignController extends Controller
     {
         return Carbon::now()->daysInMonth;
     }
+
 }

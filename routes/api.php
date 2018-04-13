@@ -30,4 +30,8 @@ Route::namespace('Api')->group(function () {
         Route::post('register', 'PassportController@register');
     });
 
+    Route::prefix('test')->group(function () {
+        Route::get('', 'DatabaseAsynController@test');
+    });
+
 });

@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSync extends Command
 {
@@ -37,8 +39,18 @@ class DatabaseSync extends Command
      */
     public function handle()
     {
-        \Schema::table('users', function ($table) {
-            dd($table);
-        });
+        $result=\DB::connection('mysql')->select(\DB::raw('show create table users'))[0];
+
+        $db = [];
+        foreach ($result as $item) {
+            $db[]=$item;
+        }
+
+        try {
+            \DB::connection('dev')->select(\DB::raw($db[1]));
+        } catch (\Exception $exception) {
+
+        }
+
     }
 }
