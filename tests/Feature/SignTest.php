@@ -34,7 +34,8 @@ class SignTest extends TestCase
 
     public function testSignActivity()
     {
-        $timeInterval = $this->getMothTimeIntervel(Carbon::now()->month)->pluck('date')->toArray();
+        $month = 5;
+        $timeInterval = $this->getMothTimeIntervel($month)->pluck('date')->toArray();
 
         $api = 'api/sign';
 
