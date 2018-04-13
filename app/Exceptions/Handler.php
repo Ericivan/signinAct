@@ -64,10 +64,4 @@ class Handler extends ExceptionHandler
         return redirect()->guest('login');
     }
 
-    protected function invalidJson($request, ValidationException $exception)
-    {
-        return response()->json([
-            'msg' => $exception->getMessage(),
-        ]);
-    }
 }
