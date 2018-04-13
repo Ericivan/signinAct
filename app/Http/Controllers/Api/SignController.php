@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\BaseException;
 use App\Http\Controllers\Controller;
 use App\Reward;
 use App\User;
@@ -33,10 +34,7 @@ class SignController extends Controller
         $isSign = UserSign::checkUserHasSign($userId, $date);
 
         if ($isSign) {
-            return response([
-                'msg' => 'user has signed',
-                'code' => 1000,
-            ]);
+            $this->error(10000, 409);
         }
         \DB::beginTransaction();
 
@@ -64,17 +62,11 @@ class SignController extends Controller
 
             \Log::error('sign', ['msg'=>$exception->getMessage()]);
 
-            return response()->json([
-                'msg' => 'system internal error',
-                'code' => 500,
-            ]);
+            $this->error(9002, 500);
         }
 
 
-        return response()->json([
-            'msg' => 'sign success',
-            'code' => 0,
-        ]);
+        return $this->success();
 
     }
 
@@ -98,7 +90,7 @@ class SignController extends Controller
             return $return;
         });
 
-        return response()->json($list->toArray());
+        return $this->success($list->toArray());
     }
 
 
@@ -115,10 +107,7 @@ class SignController extends Controller
 
         //检测传入时间准确性
         if (!$this->validRequestDate($resignDate)) {
-            return response()->json([
-                'msg' => 'invalid date time',
-                'code' => 10002
-            ]);
+            $this->error(10002,400);
         }
 
         $isReSign = UserSign::getUserHasReSign($userId,$resignDate);
@@ -133,10 +122,7 @@ class SignController extends Controller
 
         $hasSign = UserSign::checkUserHasSign($userId, $resignDate);
         if ($hasSign) {
-            return response([
-                'msg' => 'user has signed',
-                'code' => 10000,
-            ]);
+            $this->error(10000, 409);
         }
 
         \DB::beginTransaction();
@@ -165,16 +151,10 @@ class SignController extends Controller
 
             \DB::rollBack();
 
-            return response()->json([
-                'code' => 500,
-                'msg' => 'system internal error',
-            ]);
+            $this->error(9002, 500);
         }
 
-        return response()->json([
-            'code' => 0,
-            'msg' => 'success',
-        ]);
+        return $this->success();
 
 
     }
