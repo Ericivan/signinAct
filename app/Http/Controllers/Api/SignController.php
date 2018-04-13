@@ -8,6 +8,7 @@ use App\User;
 use App\UserItem;
 use App\UserSign;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class SignController extends Controller
 {
@@ -21,7 +22,7 @@ class SignController extends Controller
 
         //TODO 用户认证
 
-        $userId = 1;
+        $userId = $this->user->id;
         $date = Carbon::now()->toDateString();
 
         //测试
@@ -79,7 +80,7 @@ class SignController extends Controller
 
     public function signList()
     {
-        $userId = 1;
+        $userId = $this->user->id;
 
         $timeInterval = $this->getMothTimeIntervel(4);
 
@@ -108,7 +109,7 @@ class SignController extends Controller
         $this->validate(request(), [
             'date' => 'required|date',
         ]);
-        $userId = 1;
+        $userId = $this->user->id;
 
         $resignDate = request('date');
 
