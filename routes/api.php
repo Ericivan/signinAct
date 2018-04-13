@@ -17,8 +17,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::prefix('sign')->namespace('Api')->group(function () {
-    Route::post('/', 'SignController@sign');
-    Route::post('/re', 'SignController@reSign');
-    Route::get('/list', 'SignController@signList');
+Route::namespace('Api')->group(function () {
+
+    Route::prefix('sign')->group(function () {
+        Route::post('/', 'SignController@sign');
+        Route::post('/re', 'SignController@reSign');
+        Route::get('/list', 'SignController@signList');
+    });
+
+    Route::prefix('user')->group(function () {
+        Route::post('login', 'PassportController@login');
+        Route::post('register', 'PassportController@register');
+    });
+
 });

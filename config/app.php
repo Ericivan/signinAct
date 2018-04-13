@@ -176,7 +176,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        \Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class
+        \Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        \Laravel\Passport\PassportServiceProvider::class,
 
     ],
 
