@@ -17,7 +17,7 @@ class CreteUserItemsTable extends Migration
             return;
         }
 
-        Schema::table('user_items', function (Blueprint $table) {
+        Schema::create('user_items', function (Blueprint $table) {
             $table->increments('id');
 
             $table->integer('user_id',false,true)->unsign();
