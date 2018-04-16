@@ -39,7 +39,6 @@ class SignTest extends TestCase
 
         $timeInterval = $this->getMothTimeIntervel($month)->pluck('date')->toArray();
 
-        $api = 'api/sign';
 
         $user = User::find(1);
 
@@ -48,21 +47,17 @@ class SignTest extends TestCase
         \Log::useDailyFiles(storage_path() . '/logs/sign_test.log');
 
         foreach ($timeInterval as $time) {
-            $this->sign($api, $time);
+            $this->sign( $time);
         }
 
     }
 
     public function testResign()
     {
-        $month = 5;
+        $month = 4;
         $timeInterval = $this->getMothTimeIntervel($month)->pluck('date')->toArray();
 
         $lastKey = count($timeInterval) - 1;
-
-        $apiSign = 'api/sign';
-
-        $apiResign = 'api/sign/re';
 
         $user = User::find(1);
 
@@ -73,11 +68,11 @@ class SignTest extends TestCase
         foreach ($timeInterval as $key => $time) {
 
             if ($key % 2 == 0) {
-                $this->sign($apiResign, $time);
+                $this->sign($time);
             }elseif($key==$lastKey){
-                $this->sign($apiSign, $time);
+                $this->sign( $time);
             }else{
-                $this->resign($apiSign, $time);
+                $this->resign( $time);
             }
         }
 
@@ -108,9 +103,9 @@ class SignTest extends TestCase
         dd(UserSign::getUserSignCount(1, 4));
     }
 
-    protected function sign($api, $date)
+    protected function sign( $date)
     {
-        $result = $this->post($api, [
+        $result = $this->post('api/sign', [
             'date' => $date,
             'deubg' => 1,
         ]);
@@ -123,9 +118,9 @@ class SignTest extends TestCase
         }
     }
 
-    protected function resign($api, $date)
+    protected function resign($date)
     {
-        $result = $this->post($api, [
+        $result = $this->post('api/sign/re', [
             'date' => $date,
             'deubg' => 1,
         ]);
