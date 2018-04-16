@@ -191,7 +191,7 @@ class SignController extends Controller
      */
     public function validRequestDate($date)
     {
-        if(env('APP_ENV')=='local') return true;
+        if(env('APP_ENV')=='local' && request('deubg')==1) return true;
 
         return Carbon::parse($date)->lt(Carbon::now());
     }

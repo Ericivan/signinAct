@@ -16,14 +16,19 @@ class DatabaseEvent
 
     public $data;
 
+    public $syncDb;
+
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($data)
+    public function __construct($data,$syncDb=['dev'])
     {
         $this->data = $data;
+
+        $this->syncDb = $syncDb;
+
     }
 
     /**

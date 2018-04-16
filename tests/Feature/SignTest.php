@@ -55,7 +55,7 @@ class SignTest extends TestCase
 
     public function testResign()
     {
-        $month = 4;
+        $month = 5;
         $timeInterval = $this->getMothTimeIntervel($month)->pluck('date')->toArray();
 
         $lastKey = count($timeInterval) - 1;
@@ -112,6 +112,7 @@ class SignTest extends TestCase
     {
         $result = $this->post($api, [
             'date' => $date,
+            'deubg' => 1,
         ]);
 
         if ($result->getStatusCode() == 200) {
@@ -126,6 +127,7 @@ class SignTest extends TestCase
     {
         $result = $this->post($api, [
             'date' => $date,
+            'deubg' => 1,
         ]);
 
         if ($result->getStatusCode() == 200) {

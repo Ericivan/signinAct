@@ -28,4 +28,15 @@ class DatabaseAsynController extends Controller
         return $this->success(['video not found']);
 
     }
+
+    public function createVideo()
+    {
+        Video::create([
+            'name' => 'create event222',
+            'length' => 100,
+        ]);
+
+
+        return $this->success();
+    }
 }

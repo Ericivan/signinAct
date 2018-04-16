@@ -32,6 +32,7 @@ Route::namespace('Api')->group(function () {
 
     Route::prefix('test')->group(function () {
         Route::get('', 'DatabaseAsynController@test');
+        Route::post('', 'DatabaseAsynController@createVideo');
     });
 
 });

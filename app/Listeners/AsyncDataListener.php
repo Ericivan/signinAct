@@ -34,6 +34,8 @@ class AsyncDataListener implements ShouldQueue
     {
         $data = $event->data;
 
+        $syncDb = $event->syncDb;
+
         $table = $data->getTable();
 
         if (!Schema::connection('dev')->hasTable($table)) {
