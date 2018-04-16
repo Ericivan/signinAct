@@ -18,10 +18,14 @@ class DatabaseAsynController extends Controller
 {
     public function test()
     {
-        $user = Video::find(1);
+        $video = Video::find(1);
 
-        event(new DatabaseEvent($user));
+        if (isset($video)) {
+            event(new DatabaseEvent($video));
+            return $this->success(['sync begin']);
+        }
 
-        echo 1;
+        return $this->success(['video not found']);
+
     }
 }
