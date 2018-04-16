@@ -26,7 +26,6 @@ class SignController extends Controller
         $userId = $this->user->id;
         $date = Carbon::now()->toDateString();
 
-
         $isSign = UserSign::checkUserHasSign($userId, $date);
 
         if ($isSign) {
@@ -187,9 +186,8 @@ class SignController extends Controller
      */
     public function validRequestDateResign($date)
     {
-        \Log::useFiles(storage_path('/logs/date_output.log'));
-
-        \Log::info('request_date', ['date' => Carbon::now()->toDateString()]);
+//        \Log::useFiles(storage_path('/logs/date_output.log'));
+//        \Log::info('request_date', ['date' => Carbon::now()->toDateString()]);
 //        if(env('APP_ENV')=='local' && request('debug')==1) return true;
         return Carbon::parse($date)->lt(Carbon::now());
     }
@@ -249,4 +247,9 @@ class SignController extends Controller
         return Carbon::now()->daysInMonth;
     }
 
+
+    public function signStatistcs()
+    {
+
+    }
 }

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\Api\SignController;
+use App\Services\UserSignService;
 use App\User;
 use App\UserSign;
 use Carbon\Carbon;
@@ -55,14 +56,15 @@ class SignTest extends TestCase
 
     public function testResign()
     {
-        $month = 5;
+        $month = 4;
 
         $timeInterval = $this->getMothTimeIntervel($month)->pluck('date')->toArray();
 
         $lastKey = count($timeInterval) - 1;
 
-        $user = User::find(1);
+        $user = User::find(3);
 
+        //删除测试数据
         UserSign::where('user_id', $user->id)->whereMonth('created_at', $month)->delete();
 
         $this->be($user, 'api');
@@ -108,6 +110,7 @@ class SignTest extends TestCase
 
     protected function sign( $date)
     {
+        \Log::useFiles(storage_path('/logs/test_sign.log'));
         $result = $this->post('api/sign', [
             'date' => $date,
             'debug' => 1,
@@ -123,6 +126,7 @@ class SignTest extends TestCase
 
     protected function resign($date)
     {
+        \Log::useFiles(storage_path('/logs/test_sign.log'));
         $result = $this->post('api/sign/re', [
             'date' => $date,
             'debug' => 1,
@@ -135,4 +139,26 @@ class SignTest extends TestCase
             \Log::error('test_resign', ['content' => $result->getOriginalContent()]);
         }
     }
+
+    public function testUserCountByMonth()
+    {
+        $list = (new UserSignService())->getEntireMonthSignCount(4);
+
+        dd(UserSign::getResignUserCountByDateInMonth(4)->toArray());
+        dd(UserSign::getUserSignCountStatisc(4)->toArray());
+        dd($list);
+    }
+
+    public function testCount()
+    {
+        $times = collect();
+
+        for ($i = 0; $i <= 31; $i++) {
+            $times->push(['times' => $i, 'count' => 0]);
+        }
+
+        dd($times);
+    }
+
+
 }
