@@ -26,10 +26,6 @@ class SignController extends Controller
         $userId = $this->user->id;
         $date = Carbon::now()->toDateString();
 
-        //测试
-        if (env('APP_ENV') == 'local') {
-            $date = request('date',$date);
-        }
 
         $isSign = UserSign::checkUserHasSign($userId, $date);
 
@@ -106,7 +102,7 @@ class SignController extends Controller
         $resignDate = request('date');
 
         //检测传入时间准确性
-        if (!$this->validRequestDate($resignDate)) {
+        if (!$this->validRequestDateResign($resignDate)) {
             $this->error(10002,400);
         }
 
@@ -189,10 +185,12 @@ class SignController extends Controller
      * @name : validRequestDate
      * @description 验证用户传入时间的正确性
      */
-    public function validRequestDate($date)
+    public function validRequestDateResign($date)
     {
-        if(env('APP_ENV')=='local' && request('deubg')==1) return true;
+        \Log::useFiles(storage_path('/logs/date_output.log'));
 
+        \Log::info('request_date', ['date' => Carbon::now()->toDateString()]);
+//        if(env('APP_ENV')=='local' && request('debug')==1) return true;
         return Carbon::parse($date)->lt(Carbon::now());
     }
 

@@ -47,6 +47,7 @@ class SignTest extends TestCase
         \Log::useDailyFiles(storage_path() . '/logs/sign_test.log');
 
         foreach ($timeInterval as $time) {
+            Carbon::setTestNow(Carbon::parse($time));
             $this->sign( $time);
         }
 
@@ -54,7 +55,8 @@ class SignTest extends TestCase
 
     public function testResign()
     {
-        $month = 4;
+        $month = 5;
+
         $timeInterval = $this->getMothTimeIntervel($month)->pluck('date')->toArray();
 
         $lastKey = count($timeInterval) - 1;
@@ -67,12 +69,13 @@ class SignTest extends TestCase
 
         foreach ($timeInterval as $key => $time) {
 
-            if ($key % 2 == 0) {
+            Carbon::setTestNow(Carbon::parse($time));
+
+            if ($key == 0 || $key==$lastKey) {
                 $this->sign($time);
-            }elseif($key==$lastKey){
-                $this->sign( $time);
-            }else{
-                $this->resign( $time);
+            }elseif($key % 2 == 0){
+                $this->resign( $timeInterval[$key-1]);
+                $this->sign($time);
             }
         }
 
@@ -107,7 +110,7 @@ class SignTest extends TestCase
     {
         $result = $this->post('api/sign', [
             'date' => $date,
-            'deubg' => 1,
+            'debug' => 1,
         ]);
 
         if ($result->getStatusCode() == 200) {
@@ -122,7 +125,7 @@ class SignTest extends TestCase
     {
         $result = $this->post('api/sign/re', [
             'date' => $date,
-            'deubg' => 1,
+            'debug' => 1,
         ]);
 
         if ($result->getStatusCode() == 200) {
