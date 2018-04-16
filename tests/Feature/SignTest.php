@@ -49,7 +49,7 @@ class SignTest extends TestCase
 
         foreach ($timeInterval as $time) {
             Carbon::setTestNow(Carbon::parse($time));
-            $this->sign( $time);
+//            $this->sign( $time);
         }
 
     }
@@ -62,7 +62,7 @@ class SignTest extends TestCase
 
         $lastKey = count($timeInterval) - 1;
 
-        $user = User::find(3);
+        $user = User::find(1);
 
         //删除测试数据
         UserSign::where('user_id', $user->id)->whereMonth('created_at', $month)->delete();
@@ -144,6 +144,7 @@ class SignTest extends TestCase
     {
         $list = (new UserSignService())->getEntireMonthSignCount(4);
 
+        dd($list);
         dd(UserSign::getResignUserCountByDateInMonth(4)->toArray());
         dd(UserSign::getUserSignCountStatisc(4)->toArray());
         dd($list);
@@ -151,13 +152,8 @@ class SignTest extends TestCase
 
     public function testCount()
     {
-        $times = collect();
+        (new UserSignService())->getSignSucUser(4);
 
-        for ($i = 0; $i <= 31; $i++) {
-            $times->push(['times' => $i, 'count' => 0]);
-        }
-
-        dd($times);
     }
 
 
