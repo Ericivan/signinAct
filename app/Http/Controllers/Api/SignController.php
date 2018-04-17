@@ -191,6 +191,8 @@ class SignController extends Controller
 //        \Log::useFiles(storage_path('/logs/date_output.log'));
 //        \Log::info('request_date', ['date' => Carbon::now()->toDateString()]);
 //        if(env('APP_ENV')=='local' && request('debug')==1) return true;
+
+//        dd($date, Carbon::now()->toDateString());
         return Carbon::parse($date)->lt(Carbon::now());
     }
 
@@ -220,6 +222,12 @@ class SignController extends Controller
 
         $dayInMonth = $this->getDayInMonth();
 
+        $hasGetFinally = UserItem::whereMonth('created_at', $month)->where('user_id', $this->user->id)
+            ->first();
+
+        if (isset($hasGetFinally)) {
+            return;
+        }
 
         if ($dayInMonth == (UserSign::getUserSignCount($userId, $this->getCurrentMonth()))) {
 
