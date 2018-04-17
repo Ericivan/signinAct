@@ -54,8 +54,6 @@ class UserSignService
 
         $times = [];
 
-//        dd($list);
-
         for ($i = 0; $i <= 31; $i++) {
             array_push($times, (['times' => $i, 'count' => 0]));
         }
@@ -69,8 +67,6 @@ class UserSignService
                 }
             }
         }
-
-        dd($times);
 
         return $times;
 
