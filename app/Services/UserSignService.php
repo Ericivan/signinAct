@@ -73,4 +73,31 @@ class UserSignService
 
     }
 
+    /**
+     * @param $month
+     * @return array
+     * @author :Ericivan
+     * @name : getEntireMonthResignCount
+     * @description 每天签到点的成功补签用户数
+     */
+    public function getEntireMonthResignCount($month)
+    {
+
+        $timeInterval = monthdate($month);
+
+        $list = UserSign::getResignUserCountByDateInMonth($month);
+
+        $return = $timeInterval->map(function ($item) use ($list) {
+
+            $curentDate = $list->where('date', $item['date'])->first();
+
+            return [
+                'date' => $item['date'],
+                'count' => $curentDate->count ?? 0,
+            ];
+        });
+
+        return $return->toArray();
+    }
+
 }

@@ -23,6 +23,9 @@ Route::namespace('Api')->group(function () {
         Route::post('/', 'SignController@sign');
         Route::post('/re', 'SignController@reSign');
         Route::get('/list', 'SignController@signList');
+        Route::get('/signcount', 'SignController@signCountList');
+        Route::get('/resigncount', 'SignController@reSignCountList');
+        Route::get('/user/count', 'SignController@reSignCountList');
     });
 
     Route::prefix('user')->group(function () {

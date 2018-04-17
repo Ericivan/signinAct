@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\BaseException;
 use App\Http\Controllers\Controller;
 use App\Reward;
+use App\Services\UserSignService;
 use App\User;
 use App\UserItem;
 use App\UserSign;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\EventDispatcher\Tests\Service;
 
 class SignController extends Controller
 {
@@ -248,8 +250,31 @@ class SignController extends Controller
     }
 
 
-    public function signStatistcs()
+    public function signCountList()
     {
+        $month = Carbon::now()->month;
 
+        $list = (new UserSignService())->getEntireMonthSignCount($month);
+
+        return $this->success($list);
     }
+
+    public function reSignCountList()
+    {
+        $month = Carbon::now()->month;
+
+        $list = (new UserSignService())->getEntireMonthResignCount($month);
+
+        return $this->success($list);
+    }
+
+    public function getSignSuccessUserCountList()
+    {
+        $month = Carbon::now()->month;
+
+        $list = (new UserSignService())->getSignSucUser($month);
+
+        return $this->success($list);
+    }
+
 }

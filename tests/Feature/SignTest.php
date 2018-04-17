@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\Api\SignController;
+use App\Reward;
 use App\Services\UserSignService;
 use App\User;
 use App\UserSign;
@@ -152,8 +153,14 @@ class SignTest extends TestCase
 
     public function testCount()
     {
-        (new UserSignService())->getSignSucUser(4);
+        dd((new UserSignService())->getEntireMonthResignCount(4));
+        dd((new UserSignService())->getSignSucUser(4));
 
+    }
+
+    public function testRewardCount()
+    {
+        dd(Reward::countRewardByMonth(4));
     }
 
 
