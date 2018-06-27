@@ -22,3 +22,7 @@ Route::prefix('sign')->namespace('Api')->group(function () {
     Route::post('/re', 'SignController@reSign');
     Route::get('/list', 'SignController@signList');
 });
+
+Route::prefix('wechat')->namespace('Api')->group(function () {
+    Route::get('/sign', 'WechatController@sign');
+});
